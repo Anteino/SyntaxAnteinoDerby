@@ -1,0 +1,3 @@
+#define	DEFAULT_WORLD		0
+#define	WEAPON_SLOTS		13
+#define	MAX_CLIENT_MESSAGE	144

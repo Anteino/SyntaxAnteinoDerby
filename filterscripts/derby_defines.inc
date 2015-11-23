@@ -1,7 +1,8 @@
 #define	DERBY_UPDATE_DELAY			200
-#define	DERBY_MIN_PLAYERS			2
+#define	DERBY_MIN_PLAYERS			1
+#define	DERBY_MIN_ALIVE_PLAYERS		0
 #define	DERBY_MAX_PLAYERS			20
-#define	DERBY_START_DELAY			50	//	Delay untill start of derby after first two players joined
+#define	DERBY_START_DELAY			5000	//	Delay untill start of derby after first two players joined
 #define	DERBY_COUNTDOWN_TIME		3000
 #define	DERBY_COUNTDOWN_DT			1000	//	Conditions: DERBY_COUNTDOWN_TIME % DERBY_COUNTDOWN_DT == 0 && DERBY_COUNTDOWN_DT % 1000 == 0
 #define	DERBY_COUNTDOWN_TEXT_STYLE	4
@@ -18,6 +19,7 @@
 #define	DERBY_DEATH_INTERVAL		300
 #define	DERBY_DRAW_DISTANCE			500.0
 #define	DERBY_ENABLE_NITRO			true
+#define	DERBY_CAMERA_DZ				10.0		//	The extra height of the camera above the player when they're dead
 
 #define	DEFAULT_WORLD		0
 #define	WEAPON_SLOTS		13

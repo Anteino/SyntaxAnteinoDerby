@@ -154,98 +154,96 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 //	This module was causing problems, so it is disabled for now, the function of it may be clear, to kick/ban cheaters
 public AC_OnCheatDetected(playerid, type, extraint, Float:extrafloat, extraint2)
 {
-	// new derbyId = findDerbyPlayer(playerid);
-	// if(derbyId == -1  || IsPlayerPaused(derbyPlayer[derbyId][id]))
-	// {
-		// return 1;
-	// }
-	// switch(type)
-	// {
-		// case CHEAT_JETPACK:
-		// {
-			// kickPlayer(derbyId, "jetpack hack");
-		// }
-		// case CHEAT_WEAPON:
-		// {
-			// kickPlayer(derbyId, "weapon hack");
-		// }
-		// case CHEAT_SPEED:
-		// {
-			// if(extraint == derbyPlayer[derbyId][vehicleId])
-			// {
-				// banPlayer(derbyId, "speed hack");
-			// }
-		// }
-		// case CHEAT_HEALTHARMOUR:
-		// {
-			// kickPlayer(derbyId, "health hack");
-		// }
-		// case CHEAT_PING:
-		// {
-			// kickPlayer(derbyId, "too high ping");
-		// }
+	new derbyId = findDerbyPlayer(playerid);
+	if(derbyId == -1  || IsPlayerPaused(derbyPlayer[derbyId][id]))
+	{
+		return 1;
+	}
+	switch(type)
+	{
+		case CHEAT_JETPACK:
+		{
+			kickPlayer(derbyId, "jetpack hack");
+		}
+		case CHEAT_WEAPON:
+		{
+			kickPlayer(derbyId, "weapon hack");
+		}
+		case CHEAT_SPEED:
+		{
+			if(extraint == derbyPlayer[derbyId][vehicleId])
+			{
+				banPlayer(derbyId, "speed hack");
+			}
+		}
+		case CHEAT_HEALTHARMOUR:
+		{
+			kickPlayer(derbyId, "health hack");
+		}
+		case CHEAT_PING:
+		{
+			kickPlayer(derbyId, "too high ping");
+		}
 		// case CHEAT_TELEPORT:
 		// {
 			// banPlayer(derbyId, "teleport hack");
 		// }
-		// case CHEAT_AIRBREAK:
-		// {
-			// if(extraint == 100)
-			// {
-				// banPlayer(derbyId, "airbreak hack");
-			// }
-		// }
-		// case CHEAT_SPECTATE:
-		// {
-			// kickPlayer(derbyId, "anti-spectate hack");
-		// }
-		// case CHEAT_REMOTECONTROL:
-		// {
-			// banPlayer(derbyId, "remote control hack")
-		// }
-		// case CHEAT_MASSCARTELEPORT:
-		// {
-			// banPlayer(derbyId, "mass car teleport hack");
-		// }
-		// case CHEAT_CARJACKHACK:
-		// {
-			// banPlayer(derbyId, "car jack hack");
-		// }
-	// }
-	// return 1;
+		case CHEAT_AIRBREAK:
+		{
+			if(extraint == 100)
+			{
+				banPlayer(derbyId, "airbreak hack");
+			}
+		}
+		case CHEAT_SPECTATE:
+		{
+			kickPlayer(derbyId, "anti-spectate hack");
+		}
+		case CHEAT_REMOTECONTROL:
+		{
+			banPlayer(derbyId, "remote control hack")
+		}
+		case CHEAT_MASSCARTELEPORT:
+		{
+			banPlayer(derbyId, "mass car teleport hack");
+		}
+		case CHEAT_CARJACKHACK:
+		{
+			banPlayer(derbyId, "car jack hack");
+		}
+	}
+	return 1;
 }
 
-//	Kicks a player, showing them and every derby player the reason
+//	Kicks a player, showing them and every DERBY player the reason
 public kickPlayer(derbyId, reason[])
 {
-	new msg[MAX_CLIENT_MESSAGE], name[MAX_PLAYER_NAME], playerId;
+	new msg[MAX_CLIENT_MESSAGE], name[MAX_PLAYER_NAME];
 	
-	playerId = derbyPlayer[derbyId][id];	//	To prevent confusion with the playerid obtained from callbacks, playerId is used here
 	GetPlayerName(derbyPlayer[derbyId][id], name, MAX_PLAYER_NAME);
 	format(msg, MAX_CLIENT_MESSAGE, "You were removed from the derby with reason: %s.", reason);
 	SendClientMessage(derbyPlayer[derbyId][id], DERBY_MESSAGE_COLOR, msg);
 	
-	removeDerbyPlayer(derbyId);				//	The player is first eliminated from the derby before they're kicked
+	// removeDerbyPlayer(derbyId);				//	The player is first eliminated from the derby before they're kicked
 	format(msg, MAX_CLIENT_MESSAGE, "Derby: Player %s was removed from the derby and kicked from the server with reason: %s.", name, reason);
 	sendClientMessageToAllPlayers(msg);		//	All derby players receive a message notifying them of the kick and reason
-	Kick(playerId);							//	The actual kicking of the player
+	// Kick(playerId);							//	The actual kicking of the player
 	print(msg);								//	A debug message introduced for the problems the anti cheat module is causing
 }
 
 //	Bans a player, showing them and every player on the server the reason, further documentation analogue to kickPlayer
 public banPlayer(derbyId, reason[])
 {
-	new msg[MAX_CLIENT_MESSAGE], name[MAX_PLAYER_NAME], playerId;
+	new msg[MAX_CLIENT_MESSAGE], name[MAX_PLAYER_NAME];
 	
-	playerId = derbyPlayer[derbyId][id];
 	GetPlayerName(derbyPlayer[derbyId][id], name, MAX_PLAYER_NAME);
 	format(msg, MAX_CLIENT_MESSAGE, "You were removed from the derby with reason: %s.", reason);
 	SendClientMessage(derbyPlayer[derbyId][id], DERBY_MESSAGE_COLOR, msg);
 	
-	removeDerbyPlayer(derbyId);
+	// removeDerbyPlayer(derbyId);
 	format(msg, MAX_CLIENT_MESSAGE, "Derby: Player %s was removed from the derby and banned from the server with reason: %s.", name, reason);
 	SendClientMessageToAll(DERBY_MESSAGE_COLOR, msg);
-	Ban(playerId);
+	// Ban(playerId);
 	print(msg);
 }
 
@@ -270,8 +268,7 @@ public addDerbyPlayer(playerid)
 			SetPVarInt(playerid, "lastUpdate", GetTickCount());	//	A player dependent variable is set to check for paused (pressed escape) players during the derby
 			playerAmount++;										//	There is now one player more in the derby	
 			if(playerAmount == DERBY_MIN_PLAYERS)				//	If there are enough players to start a derby (so at least 2), a timer will start for other players to join
-																//	before the derby starts
-			{
+			{													//	before the derby starts
 				T1 = GetTickCount();							//	This value will be used for if(GetTickCount - T1 > DERBY_START_DELAY) startDerby
 			}
 			for(new j = 0; j < DERBY_KICKVOTES; j++)
@@ -280,7 +277,7 @@ public addDerbyPlayer(playerid)
 			}
 			//	Teleport the player to eliminated players position until they can join a new round
 			SetPlayerVirtualWorld(playerid, derbyWorld);
-			SetPlayerPos(playerid, playerDeathPos[0], playerDeathPos[1], playerDeathPos[2]);
+			setDeathPos(i);
 			//	End of teleport
 			TogglePlayerControllable(playerid, 0);				//	Player can't move until new round starts
 			TogglePlayerSpectating(derbyPlayer[i][id], 0);
@@ -347,6 +344,7 @@ public setOldPosition(derbyId)
 {
 	SetPlayerVirtualWorld(derbyPlayer[derbyId][id], derbyPlayer[derbyId][oldWorld]);
 	SetPlayerPos(derbyPlayer[derbyId][id], derbyPlayer[derbyId][oldPosition][0], derbyPlayer[derbyId][oldPosition][1], derbyPlayer[derbyId][oldPosition][2]);
+	SetCameraBehindPlayer(derbyPlayer[derbyId][id]);
 	return 1;
 }
 
@@ -387,6 +385,8 @@ public playerEndDerby(derbyId)
 public setDeathPos(derbyId)
 {
 	SetPlayerPos(derbyPlayer[derbyId][id], playerDeathPos[0], playerDeathPos[1], playerDeathPos[2]);
+	SetPlayerCameraPos(derbyPlayer[derbyId][id], playerDeathPos[0], playerDeathPos[1], playerDeathPos[2] + DERBY_CAMERA_DZ);
+	SetPlayerCameraLookAt(derbyPlayer[derbyId][id], playerDeathPos[0], playerDeathPos[1], playerDeathPos[2] - 1, CAMERA_CUT);
 	return 1;
 }
 
@@ -399,10 +399,13 @@ public getOldAmmo(playerid)
 		GetPlayerWeaponData(playerid, i, weapon, ammo);
 		if(weapon == DERBY_WEAPON_ID)
 		{
-			return ammo;
+			break;
 		}
 	}
-	return 0;
+	new msg[MAX_CLIENT_MESSAGE];
+	format(msg, MAX_CLIENT_MESSAGE, "You have %d rocket launcher missiles.", ammo);
+	SendClientMessage(playerid, DERBY_MESSAGE_COLOR, msg);
+	return ammo;
 }
 
 //	This function gets the current health of the player and is called when they join to save their conditions before joining the game
@@ -758,7 +761,7 @@ public endDerby()
 	derbyStarted = false;											//	The derby is ended
 	derbyCountDownStarted = false;									//	The countdown is not (yet) active because there is an amount of time between two sequential games			
 	countDownTime = DERBY_COUNTDOWN_TIME;							//	The countdown timer is already reset however
-	vehiclesSetUp = false;											//	Vehicles are deleted so they can't be set up (dohh)
+	vehiclesSetUp = false;											//	Vehicles were deleted, so they can't be set up (dohh)
 	
 	SetTimer("restartDerby", DERBY_RESTART_DELAY, false);			//	A countdown before the countdown starts, there are probably neater ways to implement this
 	return 1;
@@ -807,9 +810,6 @@ public updatePlayers()
 	new Float:X = 0.0, Float:Y = 0.0, Float:Z = 0.0;
 	for(new i = 0; i < playerAmount; i++)
 	{
-		new msg[32];
-		valstr(msg, derbyPlayer[i][spectator]);
-		print(msg);
 		GetPlayerPos(derbyPlayer[i][id], X, Y, Z);
 		if(derbyPlayer[i][status] == DERBY_PLAYER_DEAD)
 		{
@@ -920,7 +920,7 @@ public derbyUpdate()
 	{
 		updatePlayers();			//	Check if anything changed in the players states
 		dt = GetTickCount() - T1;	//	Update the change in time since the game was started, so the maximum duration of the game can be compared to this value
-		if (alivePlayers <= 1 || dt >= DERBY_TOTAL_TIME)
+		if (alivePlayers <= DERBY_MIN_ALIVE_PLAYERS || dt >= DERBY_TOTAL_TIME)
 		{
 			endDerby();				//	End the derby if this is the case or if every player but one is eliminated
 		}
